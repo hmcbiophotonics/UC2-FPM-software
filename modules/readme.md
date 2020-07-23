@@ -10,7 +10,7 @@ This directory contains the arduino code that is used for the Z-stage and LED ma
    - try the test wifi scanning sketch to ensure everything works. I had to hold down the boot switch until the arduino IDE tried to connect to the esp32 to get the connection to work.
    - Read up on the MQTT api [here](http://mosquitto.org/man/mqtt-7.html).
  - For the LED matrix esp32:
-   - The regular `Adafruit_neomatrix` lib won't work (see adafruit/Adafruit_NeoPixel#139).
+   - The regular `Adafruit_neomatrix` lib won't work (see [adafruit/Adafruit_NeoPixel#139](https://github.com/adafruit/Adafruit_NeoPixel/issues/139)).
    - Need to install https://github.com/marcmerlin/FastLED_NeoMatrix] (and dependencies: `Adafruit_GFX`, `FastLED`, https://github.com/marcmerlin/Framebuffer_GFX).
    - connect the 5v/ground rails to those of the neopixel, and the data pin to pin 26 of the esp32
  - For the zstage esp32:
