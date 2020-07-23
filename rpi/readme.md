@@ -1,7 +1,7 @@
- - Please read the docstring for ~run_fpm.py~ to set up the pi.
- - check the configuration options in ~run_fpm.py~!!
- - ensure ~mosquitto~ and ~mosquitto_clients~ is installed (with apt).
-   - monitor mqtt with: ~mosquitto_sub -t -v '#'~. (hashtag is a wildcard)
-   - send test messages with (e.g.): ~mosquitto_pub -t '/FPMSCOPE/LEDMATRIX/RECM' -m 'PXL+0+255+0+0'~
+ - Please read the docstring for `run_fpm.py` to set up the pi.
+ - check the configuration options in `run_fpm.py`!!
+ - ensure `mosquitto` and `mosquitto_clients` is installed (with apt).
+   - monitor mqtt with: `mosquitto_sub -t -v '#'`. (hashtag is a wildcard)
+   - send test messages with (e.g.): `mosquitto_pub -t '/FPMSCOPE/LEDMATRIX/RECM' -m 'PXL+0+255+0+0'`
    - see man pages for more.
- - clone this repo to home dir of the pi if possible, so the default script path on the server's ~run_fpm.py~ is correct.
+ - clone this repo to home dir of the pi if possible, so the default script path on the server's `run_fpm.py` is correct.
