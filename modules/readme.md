@@ -1,5 +1,7 @@
-* Module Code
+# Module Code
+
 This directory contains the arduino code that is used for the Z-stage and LED matrix esp32s.
+It is code that has been adapted slightly (mainly different libraries used, but also added the `SETSPEED` command in the zstage code) from the official [UC2-Software-GIT](https://github.com/bionanoimaging/UC2-Software-GIT) repository.
 
  - [follow this tutorial to set up the esp32 on the arduino IDE](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
    - This contains the board manager link you need to add
