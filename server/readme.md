@@ -1,0 +1,6 @@
+- please see the docstring of ~run_fpm.py~.
+- it's recommended to run this in a venv (e.g. using ~python -m venv_uc2~, ~source venv_uc2/bin/activate~.
+- use ~requirements.txt~ to install dependencies once the venv is activated.
+- see the code for how ~picamera~ is loaded, it might require some tweaking.
+  - we need to use a branch of picamera that includes [[https://github.com/rwb27/picamera][Richard Bowman's fork]] (to manually set gains) and [[https://github.com/AlecVercruysse/picamera][my fork]] (to add IMX477 support). Hopefully, both of these will be added in v1.14, but for now we cannot use the official repo. The branch ~rwb27_fork~ of my fork has both patches for now.
+    - ~pip install git+https://github.com/AlecVercruysse/picamera.git@rwb_27_fork~ should work but I haven't tested it myself (I cloned the repo to the home directory of the pi, checked out the branch with git, and edited the path that python looks for packages in so that it would find my picamera first).

@@ -1,0 +1,2 @@
+using remote_script_path: "/home/pi/run_fpm.py"
+WARNING: local data dir already exists.

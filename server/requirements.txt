@@ -1,0 +1,5 @@
+paramiko
+requests
+beautifulsoup4
+numpy
+pypng
