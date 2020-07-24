@@ -42,7 +42,7 @@ host = 'uc2pi.attlocal.net'
 username = 'pi'
 rsa_psk_path = '~/.ssh/uc2pi_key_rsa'
 
-remote_script_path = '/home/pi/UC2_FPM-software/rpi/run_fpm.py'# needs to be absolute
+remote_script_path = '/home/pi/UC2-FPM-software/rpi/run_fpm.py'# needs to be absolute
 remote_data_path = 'fpm_data'  # subdir of http server root
 
 local_data_dir = '~/Documents/brake_2020_summer/data/fpm_data_{}'.format(
@@ -144,6 +144,7 @@ def main():
     except FileExistsError:
         print("WARNING: local data dir already exists. deleteing...")
         for path in Path(local_data_dir).expanduser().glob('*'):
+            print("deleting: {}".format(path))
             os.unlink(path)
     paths = []
     while ssh_proc.is_alive():

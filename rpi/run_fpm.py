@@ -88,12 +88,17 @@ client.publish(ledmatrix_topic + "RECM" , "CLEAR")
 time.sleep(2) 
 
 message_awk = True
+ledmatrix_stat = 1
 def ledmatrix_stat_callback(client, userdata, message):
     global message_awk
     logging.info("stat_callback: Received message '" + str(message.payload) + "' on topic '"
           + message.topic + "' with QoS " + str(message.qos))
     if message.payload == b"PXL DONE":
         message_awk = True
+    elif message.payload = b"0":
+        ledmatrix_stat = 0
+    elif message.payload =b"1":
+        ledmatrix_stat = 1
 
 def set_led_and_wait(i, rgb):
     global message_awk
@@ -103,6 +108,10 @@ def set_led_and_wait(i, rgb):
     message_awk = False
     client.publish(ledmatrix_topic + "RECM", "PXL+{}+{}+{}+{}".format(i, *rgb))
     while not message_awk:
+        if ledmatrix_stat = 0:
+            while not ledmatrix_stat:
+                time.sleep(0.1)
+            client.publish(ledmatrix_topic + "RECM", "PXL+{}+{}+{}+{}".format(i, *rgb))
         time.sleep(0.1)
 
 def on_message(client, userdata, message):
