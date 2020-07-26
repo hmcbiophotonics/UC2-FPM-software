@@ -43,7 +43,7 @@ mqtt_client_id = "pi"
 setup_id = "FPMSCOPE"
 ledmatrix_id = "LEDMATRIX"
 ledmatrix_pxl_count = 64
-exposure_times = [50000, 100000, 200000] # in us
+exposure_times = [1000, 5000, 10000, 100000] # in us
 analog_gain = 1                        # 1--highest read noise, highest dynamic range
 digital_gain = 1
 base_folder_path = "/var/www/" # probably what you want if you're hosting these files on a webserver.
@@ -131,5 +131,6 @@ for pxl_idx in range(ledmatrix_pxl_count):
             camera.capture(output, 'jpeg', bayer=True)
             np.save("img{}_{}us".format(pxl_idx, exposure_time), output.array)
             logging.info("{}u exposure complete.".format(exposure_time))
+            Path("img{}_{}us.done".format(pxl_idx, exposure_time)).touch()
         set_led_and_wait(pxl_idx, (0, 0, 0))
 logging.info("finished in: {}s".format(time.time() - start_time))
