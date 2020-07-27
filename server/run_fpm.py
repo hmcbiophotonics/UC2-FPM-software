@@ -48,6 +48,11 @@ remote_data_path = 'fpm_data'  # subdir of http server root
 local_data_dir = '~/Documents/brake_2020_summer/data/fpm_data_{}'.format(
     datetime.today().strftime('%Y-%m-%d'))
 
+
+new_dataset = True # if false, don't run FPM, just use the files already on the pi
+# only need to change this if false:
+num_images = 4*64 # when can we stop processing?
+
 # image processing options
 remove_dark_level = True
 dark_level = 256
@@ -95,10 +100,11 @@ def download_and_process(url, local_data_dir, name):
     with open(path, "wb") as f:
         # for some reason Pillow can't open 16-bit RGB images.
         # we have to combine chanels ourselves:
-        red = Image.fromarray(img_arr[:, :, 0], mode="I;16").convert("L")
-        green = Image.fromarray(img_arr[:, :, 1], mode="I;16").convert("L")
-        blue = Image.fromarray(img_arr[:, :, 2], mode="I;16").convert("L")
-        Image.merge("RGB", (red, green, blue)).save(path)
+        #red = Image.fromarray(img_arr[:, :, 0], mode="I;16").convert("L")
+        #green = Image.fromarray(img_arr[:, :, 1], mode="I;16").convert("L")
+        #blue = Image.fromarray(img_arr[:, :, 2], mode="I;16").convert("L")
+        #Image.merge("RGB", (red, green, blue)).save(path)
+        tiff.imwrite(path, img_arr)
 
 
 def update_remote_file_list(host, remote_data_path):
@@ -128,15 +134,16 @@ def main():
     print("using remote_script_path: \"{}\"".format(remote_script_path))
     command = "rm /var/www/{}/*; {}".format(remote_data_path, remote_script_path)
 
-    # run the script and wait until completion (show log info)
-    ssh_proc = multiprocessing.Process(target=connect_and_run_command,
-                                       args=(
-                                           host,
-                                           username,
-                                           rsa_psk_path,
-                                           command,
-                                       ))
-    ssh_proc.start()
+    if new_dataset:
+        # run the script and wait until completion (show log info)
+        ssh_proc = multiprocessing.Process(target=connect_and_run_command,
+                                           args=(
+                                               host,
+                                               username,
+                                               rsa_psk_path,
+                                               command,
+                                           ))
+        ssh_proc.start()
 
     # look for new files @ http://hostname/fpm_data, download and process
     try:
@@ -147,7 +154,7 @@ def main():
             print("deleting: {}".format(path))
             os.unlink(path)
     paths = []
-    while ssh_proc.is_alive():
+    while ssh_proc.is_alive() if new_dataset else len(paths) < num_images:
         paths = sync_new_files(host, remote_data_path, paths, local_data_dir)
     # run one more time once the script is complete to deal with last file
     paths = sync_new_files(host, remote_data_path, paths, local_data_dir)
