@@ -20,6 +20,10 @@ pi. This isn't a high priority imo because entire OS images can be swapped
 with SD cards, so we can have dedicated SD cards designed for each
 application.
 
+TODO: Need to RM all files on pi working folder before we can start
+querying which ones are available, otherwise the .done files will be
+found and things will be incorrectly downloaded.
+
 """
 import os
 import sys
@@ -36,6 +40,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 import png
 from PIL import Image
+import tifffile as tiff
 
 # ================================== CONFIG ===================================
 host = 'uc2pi.attlocal.net'
@@ -50,8 +55,7 @@ local_data_dir = '~/Documents/brake_2020_summer/data/fpm_data_{}'.format(
 
 
 new_dataset = True # if false, don't run FPM, just use the files already on the pi
-# only need to change this if false:
-num_images = 4*64 # when can we stop processing?
+#num_images = 5*64 # ONLY NEEDED WHEN ^^ IS FALSE: when can we stop processing?
 
 # image processing options
 remove_dark_level = True
@@ -86,6 +90,7 @@ def connect_and_run_command(host, username, rsa_psk_path, command):
 
 
 def download_and_process(url, local_data_dir, name):
+    time.sleep(10) # make sure rpi cpu has time to flush io and all that just in case
     print("url: {}\nlocal data dir: {}\nname: {}".format(url, local_data_dir, name))
     raw_response = requests.get(url, stream=True).content
     buf = io.BytesIO(raw_response)
@@ -121,13 +126,15 @@ def update_remote_file_list(host, remote_data_path):
 
 def sync_new_files(host, remote_data_path, existing_paths, local_data_dir):
     new_paths = update_remote_file_list(host, remote_data_path)
+    jobs = []
     for path in list(set(new_paths) - set(existing_paths)):
-        name = path.replace(".npy", ".tif")
+        name = path.replace(".npy", ".tiff")
         url = 'http://' + host + '/' + remote_data_path + '/' + path
         job = multiprocessing.Process(target=download_and_process,
                                       args=(url, local_data_dir, name))
+        jobs.append(job)
         job.start()
-    return new_paths
+    return new_paths, jobs
 
 
 def main():
@@ -144,7 +151,10 @@ def main():
                                                command,
                                            ))
         ssh_proc.start()
+    else:
+        print("new_dataset false, using existing files...")
 
+    time.sleep(5) # give the pi some time to delete files first
     # look for new files @ http://hostname/fpm_data, download and process
     try:
         os.mkdir(Path(local_data_dir).expanduser())
@@ -154,10 +164,15 @@ def main():
             print("deleting: {}".format(path))
             os.unlink(path)
     paths = []
+    jobs = []
     while ssh_proc.is_alive() if new_dataset else len(paths) < num_images:
-        paths = sync_new_files(host, remote_data_path, paths, local_data_dir)
+        paths, newjobs = sync_new_files(host, remote_data_path, paths, local_data_dir)
+        jobs.extend(newjobs)
     # run one more time once the script is complete to deal with last file
-    paths = sync_new_files(host, remote_data_path, paths, local_data_dir)
+    paths, newjobs = sync_new_files(host, remote_data_path, paths, local_data_dir)
+    jobs.extend(newjobs)
+    for job in jobs:
+        job.join()
     print("all files processed. exiting...")
 
     

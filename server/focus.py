@@ -20,8 +20,9 @@ import subprocess
 import os
 
 hostname = 'uc2pi.attlocal.net'
-preview = True
+preview = False
 crop_center = False
+sleep_time = .5
 
 last_vals = deque() # a queue
 while (True):
@@ -40,7 +41,7 @@ while (True):
         last_vals.popleft()
     last_vals.append(var)
     print("variance:\t{:8>f}\t{:8>f}\t{:8>f}".format(*np.mean(last_vals, axis=0)))
-    sleep(2)
+    sleep(sleep_time)
     if preview:
         viewer.terminate()
         viewer.kill()
