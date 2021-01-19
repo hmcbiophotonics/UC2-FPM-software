@@ -13,7 +13,7 @@ It is code that has been adapted slightly (mainly different libraries used, but 
    - Read up on the MQTT api [here](http://mosquitto.org/man/mqtt-7.html).
  - For the LED matrix esp32:
    - The regular `Adafruit_neomatrix` lib won't work (see [adafruit/Adafruit_NeoPixel#139](https://github.com/adafruit/Adafruit_NeoPixel/issues/139)).
-   - Need to install https://github.com/marcmerlin/FastLED_NeoMatrix] (and dependencies: `Adafruit_GFX`, `FastLED`, https://github.com/marcmerlin/Framebuffer_GFX).
+   - Need to install https://github.com/marcmerlin/FastLED_NeoMatrix (and dependencies: `Adafruit_GFX`, `FastLED`, https://github.com/marcmerlin/Framebuffer_GFX).
    - connect the 5v/ground rails to those of the neopixel, and the data pin to pin 26 of the esp32
  - For the zstage esp32:
    - Do not try to power the stepper motor driver from the esp32.
