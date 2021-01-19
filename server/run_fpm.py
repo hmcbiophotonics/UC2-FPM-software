@@ -3,7 +3,7 @@ Alec Vercruysse
 2020-07-21
 
 Connect to the uc2 rpi to capture images, get the images, process them
-into decent 12-bit png bayer images, and save them as a dataset!
+into 12-bit png bayer images with blacklevel removed, and save them as a dataset!
 
 This is mainly needed due to speed and space: The rpi really cannot store
 more than a single run of FPM. So we want to have some sort of automatic
@@ -19,10 +19,6 @@ Unfortunately, this script does not support working in a venv on the remote
 pi. This isn't a high priority imo because entire OS images can be swapped
 with SD cards, so we can have dedicated SD cards designed for each
 application.
-
-TODO: Need to RM all files on pi working folder before we can start
-querying which ones are available, otherwise the .done files will be
-found and things will be incorrectly downloaded.
 
 """
 import os
@@ -58,7 +54,7 @@ new_dataset = True # if false, don't run FPM, just use the files already on the 
 #num_images = 5*64 # ONLY NEEDED WHEN ^^ IS FALSE: when can we stop processing?
 
 # image processing options
-remove_dark_level = True
+remove_dark_level = True # subtract dark_level from all pixels (or bring to 0)
 dark_level = 256
 # =============================================================================
 
